@@ -1,5 +1,4 @@
-name: Multiple Jobs
-
+name: Multiple Jobs in sequence using NEEDS
 on: push
 
 jobs:
