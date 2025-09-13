@@ -1,0 +1,41 @@
+name: Timeout
+
+env:
+  CONTAINER_REGISTRY: docker.io
+  DOCKER_USERNAME: deepanjannag
+  IMAGE_NAME: github-actions-nginx
+
+on :
+    workflow_dispatch: 
+    # push
+    # schedule:
+    #   - cron: "*/1 * * * *"
+
+jobs :
+    
+    docker:       
+        runs-on: ubuntu-latest
+        steps:
+            - name: Docker Build              
+              run: echo docker build -t $CONTAINER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest
+
+            - name: Docker Login
+              env:
+                DOCKER_PASSWORD: s3cUrePaSsword
+              run: echo docker login -- username=$DOCKER_USERNAME -- password=$DOCKER_PASSWORD
+
+            - name: Docker Publish                
+              run: echo docker push $CONTAINER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest
+              
+    deploy:
+        needs: docker
+        concurrency:
+          group: production-deployment
+          cancel-in-progress: true      # current in-progress workflow will be cancelled if a newer workflow in the same group is launched
+        runs-on: ubuntu-latest
+        steps:
+        - name: Docker Run          
+          run: |
+            echo docker run -d -p 8080:80 $CONTAINER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest
+            sleep 600
+          timeout-minutes: 60        # timeout can be at STEP or JOB level
