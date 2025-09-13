@@ -1,4 +1,4 @@
-name: Exploring Variables and Secrets
+name: Expressions
 
 env:
   CONTAINER_REGISTRY: docker.io
@@ -25,6 +25,7 @@ jobs :
               run: echo docker push $CONTAINER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:latest
               
     deploy:
+        if: github.ref == 'refs/heads/main'               #EXPRESSION
         needs: docker
         runs-on: ubuntu-latest
         steps:
