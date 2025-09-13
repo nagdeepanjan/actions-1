@@ -1,4 +1,4 @@
-name: Exploring Variables and Secrets
+name: Expressions
 
 env:
   CONTAINER_REGISTRY: docker.io
