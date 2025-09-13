@@ -29,6 +29,9 @@ jobs :
               
     deploy:
         needs: docker
+        concurrency:
+          group: production-deployment
+          cancel-in-progress: true      # current in-progress workflow will be cancelled if a newer workflow in the same group is launched
         runs-on: ubuntu-latest
         steps:
         - name: Docker Run          
